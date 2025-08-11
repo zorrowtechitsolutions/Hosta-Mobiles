@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Hosta",
+    "slug": "hosta",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/splash-icon.png",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "versionCode": 24,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/HOSTAICON.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "INTERNET"
+      ],
+      "package": "com.thasleemmk.hostahospitalmanagement"
+    },
+    "web": {
+      "favicon": "./assets/splash-icon.png"
+    },
+    "jsEngine": "jsc",
+    "extra": {
+      "eas": {
+        "projectId": "2a2daf7b-df8f-415d-9757-c9bd675cf389"
+      }
+    },
+    "owner": "thasleemmk"
+  }
+}
