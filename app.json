@@ -31,9 +31,9 @@
     "jsEngine": "jsc",
     "extra": {
       "eas": {
-        "projectId": "2a2daf7b-df8f-415d-9757-c9bd675cf389"
+        "projectId": "cb56f7a9-cc4f-485e-a099-56d7cb2f6dc8"
       }
     },
-    "owner": "thasleemmk"
+    "owner": "zorrowtech"
   }
 }

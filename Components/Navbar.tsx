@@ -67,6 +67,7 @@ export default function Navbar() {
     { name: "Home", path: "Home" },
     { name: "About", path: "About" },
     { name: "Contact", path: "Contact" },
+    { name: "Settings", path: "Settings" },
   ];
 
   const handleLogout = async () => {

@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Linking,
 } from "react-native";
 import { Mail, Lock, EyeOff, Eye, AlertCircle } from "lucide-react-native";
 import { apiClient } from "../Components/Axios";
@@ -23,6 +24,7 @@ const UserLogin = ({ navigation }: { navigation: any }) => {
   const [error, setError] = useState("");
   const dispatch = useDispatch();
 
+  // ✅ Normal Login
   const handleSubmit = async () => {
     setError("");
 
@@ -34,7 +36,7 @@ const UserLogin = ({ navigation }: { navigation: any }) => {
     try {
       const result = await apiClient.post(
         "/api/users/login",
-        { email: email, password: password },
+        { email, password },
         { withCredentials: true }
       );
 
@@ -46,13 +48,41 @@ const UserLogin = ({ navigation }: { navigation: any }) => {
           _id: result.data.data._id as string,
         })
       );
-
-      navigation.navigate("Home" as never); // Redirect to Home screen
+      navigation.navigate("Home" as never);
     } catch (err: any) {
       setError(
         err.response?.data?.message || "Login failed. Please try again."
       );
       console.error(err);
+    }
+  };
+
+  // ✅ Google Login (just hit backend `/` endpoint)
+  const handleGoogleLogin = async () => {
+    try {
+      //  const result = await apiClient.post(
+      //   "/",
+      //   { email, password },
+      //   { withCredentials: true }
+      // );
+
+      // successToast("Login successful");
+      // await AsyncStorage.setItem("accessToken", result.data.token);
+      // dispatch(
+      //   updateUserData({
+      //     ...result.data.data,
+      //     _id: result.data.data._id as string,
+      //   })
+      // );
+      // navigation.navigate("Home" as never);
+
+       const backendUrl = "http://localhost:3000"; 
+
+    // Open backend root endpoint (which has <a href="/auth/google">...)
+    await Linking.openURL(backendUrl);
+    } catch (error) {
+      setError("Failed to start Google login. Please try again.");
+      console.error(error);
     }
   };
 
@@ -115,6 +145,11 @@ const UserLogin = ({ navigation }: { navigation: any }) => {
 
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Sign In</Text>
+          </TouchableOpacity>
+
+          {/* ✅ Google Signin Button (redirects to backend /) */}
+          <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
+            <Text style={styles.googleButtonText}>Sign in with Google</Text>
           </TouchableOpacity>
 
           <View style={styles.footer}>
@@ -209,8 +244,21 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 6,
     alignItems: "center",
+    marginBottom: 12,
   },
   buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  googleButton: {
+    backgroundColor: "#DB4437",
+    paddingVertical: 12,
+    borderRadius: 6,
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  googleButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",

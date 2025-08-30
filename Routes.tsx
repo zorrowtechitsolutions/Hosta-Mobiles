@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomePage from "./Pages/Home";
@@ -15,6 +15,10 @@ import DoctorsPage from "./Pages/Doctors";
 import SpecialtiesPage from "./Pages/Specialties";
 import AmbulanceServicesPage from "./Pages/Ambulance-services";
 import CustomHeader from "./Components/CustomHeader";
+import BloodPage from "./Pages/Blood";
+import DonatePage from "./Pages/Donate";
+import Profile from "./Pages/Settings";
+
 const Stack = createStackNavigator();
 
 const Routes = () => {
@@ -30,6 +34,8 @@ const Routes = () => {
       >
         <Stack.Screen name="Home" component={HomePage} />
         <Stack.Screen name="About" component={About} />
+                <Stack.Screen name="Settings" component={Profile} />
+
         <Stack.Screen name="Contact" component={Contact} />
         <Stack.Screen name="Register" component={UserRegistration} />
         <Stack.Screen name="Login" component={UserLogin} />
@@ -44,6 +50,10 @@ const Routes = () => {
         <Stack.Screen name="Doctors" component={DoctorsPage} />
         <Stack.Screen name="Specialties" component={SpecialtiesPage} />
         <Stack.Screen name="Ambulance" component={AmbulanceServicesPage} />
+                <Stack.Screen name="Blood" component={BloodPage} />
+                                <Stack.Screen name="Donate" component={DonatePage} />
+
+
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -7,7 +7,7 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import { Ambulance, Building2, Hospital, UserRound } from "lucide-react-native";
+import { Ambulance, Building2, Droplet, Hospital, Search, Stethoscope, UserRound } from "lucide-react-native";
 import Navbar from "../Components/Navbar";
 import AdSwiper from "../Components/Carousels";
 import { useDispatch } from "react-redux";
@@ -15,12 +15,14 @@ import { getData } from "../Components/BackgroundTask";
 
 const features = [
   { name: "Hospitals", icon: Hospital, screen: "HostpitalTypes" },
-  { name: "Doctors", icon: UserRound, screen: "Doctors" },
+  { name: "Doctors", icon: Stethoscope, screen: "Doctors" },
   { name: "Specialties", icon: Building2, screen: "Specialties" },
   { name: "Ambulance", icon: Ambulance, screen: "Ambulance" },
   // { name: "Donate Blood", icon: Droplet, screen: "Blood-Donation" },
-  // { name: "Find Blood", icon: Search, screen: "Blood-Request" },
+  { name: "Blood", icon: Droplet, screen: "Blood" },
+    { name: "Nurses", icon:  UserRound , screen: "Blood" },
 ];
+
 
 const adImages = [
   "https://img.freepik.com/free-vector/flat-design-medical-facebook-ad_23-2149091913.jpg",
