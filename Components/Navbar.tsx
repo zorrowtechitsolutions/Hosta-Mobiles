@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
+import { View, Text,Image, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../Redux/UserData";
@@ -7,6 +7,7 @@ import { RootState } from "../Redux/Store";
 import { apiClient } from "./Axios";
 import { Menu, X } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 type NavItemProps = {
   to: string;
@@ -60,13 +61,24 @@ const MobileMenu = ({ isOpen, onClose, children }: MobileMenuProps) => {
 export default function Navbar() {
   const { _id } = useSelector((state: RootState) => state.userLogin);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
   const route = useRoute();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+
+    const [user, setUser] = useState({
+      name: "John Doe",
+      email: "john@example.com",
+      phone: "9876543210",
+      picture: "https://i.pravatar.cc/300",
+    });
 
   const navItems = [
     { name: "Home", path: "Home" },
     { name: "About", path: "About" },
     { name: "Contact", path: "Contact" },
+    // { name: "Settings", path: "Settings" },
   ];
 
   const handleLogout = async () => {
@@ -117,6 +129,9 @@ export default function Navbar() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
       >
+  <TouchableOpacity onPress={() => navigation.navigate("Settings" as never)}>
+    <Image source={{ uri: user?.picture }} style={styles.avatar} />
+  </TouchableOpacity>        
         {navItems.map((item) => (
           <NavItem
             key={item.name}
@@ -154,6 +169,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+    avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: "#007bff",
+    margin: "auto",
   },
   title: {
     color: "white",
