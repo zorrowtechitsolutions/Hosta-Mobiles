@@ -3,6 +3,7 @@ import { setHospitalData } from "../Redux/HospitalsData";
 import { getCurrentLocation } from "./GetCurrentLocation";
 import { updateUserData } from "../Redux/UserData";
 import { setAmbulances } from "../Redux/AmbulanceData";
+import { setBloods } from "../Redux/BloodData";
 
 export const getData = async (dispatch: any) => {
   try {
@@ -17,6 +18,9 @@ export const getData = async (dispatch: any) => {
     const ambulances = await apiClient.get("/api/ambulances");
     dispatch(setAmbulances(ambulances.data.data));
 
+    const donorsRes = await apiClient.get("/api/donors");
+    dispatch(setBloods(donorsRes.data.donors));
+
     const user = await apiClient.get("/api/users", {
       withCredentials: true,
     });
@@ -30,6 +34,9 @@ export const getData = async (dispatch: any) => {
         _id: _id as string,
       })
     );
+
+    
+
   } catch (err) {
     console.error(err);
   }

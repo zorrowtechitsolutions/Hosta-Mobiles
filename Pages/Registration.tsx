@@ -8,30 +8,23 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
-  Modal,
 } from "react-native";
-import { Mail, Phone, Lock, CheckCircle, X, User } from "lucide-react-native";
+import { Mail, Phone, Lock, Eye, EyeOff, User } from "lucide-react-native";
 import { apiClient } from "../Components/Axios";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../Redux/Store";
-import {
-  updateFormData,
-  sentOtp,
-  setOtp,
-  setRandomOtp,
-  resetForm,
-} from "../Redux/UserRegistration";
-import { FormData } from "../Redux/UserRegistration";
+import { updateFormData, resetForm, FormData } from "../Redux/UserRegistration";
 import { errorToast, successToast } from "../Components/Toastify";
 
 const UserRegistration = ({ navigation }: { navigation: any }) => {
-  const { formData, otp, otpSent, randomOtp } = useSelector(
+  const { formData } = useSelector(
     (state: RootState) => state.userRegistration
   );
   const dispatch = useDispatch();
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [showOtpPopup, setShowOtpPopup] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (name: keyof FormData, value: string) => {
     dispatch(updateFormData({ field: name, value }));
@@ -52,58 +45,29 @@ const UserRegistration = ({ navigation }: { navigation: any }) => {
       newErrors.password = "Password must be at least 8 characters";
     if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async () => {
     if (validateForm()) {
-      if (!otpSent) {
-        dispatch(sentOtp(true));
-        setShowOtpPopup(true);
-
-        const randomSixDigit = Math.floor(
-          100000 + Math.random() * 900000
-        ).toString();
-        dispatch(setRandomOtp(randomSixDigit));
-
-        try {
-          await apiClient.post(
-            "/api/email",
-            {
-              from: "hostahelthcare@gmail.com",
-              to: formData.email,
-              subject: "OTP VERIFICATION",
-              text: `Otp for Hosta registration is ${randomSixDigit}`,
-            },
-            { withCredentials: true }
-          );
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        if (otp === randomOtp) {
-          try {
-            await apiClient.post(
-              "/api/users/registeration",
-              {
-                name: formData.name,
-                email: formData.email,
-                password: formData.password,
-                phone: formData.mobile,
-              },
-              { withCredentials: true }
-            );
-            successToast("Registration successful!");
-            dispatch(resetForm());
-            navigation.navigate("Login");
-          } catch (err: any) {
-            errorToast(err.response?.data?.message || "Registration failed");
-          }
-          setShowOtpPopup(false);
-        } else {
-          errorToast("Wrong OTP, please try again!");
-        }
+      try {
+        const response=await apiClient.post(
+          "/api/users/registeration",
+          {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            phone: formData.mobile,
+          },
+          { withCredentials: true }
+        );
+        successToast("Registration successful!");
+        dispatch(resetForm());
+        navigation.navigate("Login");
+      } catch (err: any) {
+        errorToast(err.response?.data?.message || "Registration failed");
       }
     }
   };
@@ -119,6 +83,7 @@ const UserRegistration = ({ navigation }: { navigation: any }) => {
       >
         <View style={styles.form}>
           <Text style={styles.header}>User Registration</Text>
+
           <View style={styles.inputGroup}>
             <User size={18} color="#66BB6A" style={styles.icon} />
             <TextInput
@@ -161,10 +126,17 @@ const UserRegistration = ({ navigation }: { navigation: any }) => {
             <TextInput
               style={styles.input}
               placeholder="Enter password"
-              secureTextEntry
+              secureTextEntry={!showPassword}
               value={formData.password}
               onChangeText={(text) => handleChange("password", text)}
             />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              {showPassword ? (
+                <EyeOff size={18} color="#66BB6A" />
+              ) : (
+                <Eye size={18} color="#66BB6A" />
+              )}
+            </TouchableOpacity>
           </View>
           {errors.password && (
             <Text style={styles.errorText}>{errors.password}</Text>
@@ -175,20 +147,28 @@ const UserRegistration = ({ navigation }: { navigation: any }) => {
             <TextInput
               style={styles.input}
               placeholder="Confirm password"
-              secureTextEntry
+              secureTextEntry={!showConfirmPassword}
               value={formData.confirmPassword}
               onChangeText={(text) => handleChange("confirmPassword", text)}
             />
+            <TouchableOpacity
+              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? (
+                <EyeOff size={18} color="#66BB6A" />
+              ) : (
+                <Eye size={18} color="#66BB6A" />
+              )}
+            </TouchableOpacity>
           </View>
           {errors.confirmPassword && (
             <Text style={styles.errorText}>{errors.confirmPassword}</Text>
           )}
 
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>
-              {otpSent ? "Verify OTP & Register" : "Send OTP"}
-            </Text>
+            <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
+
           <View style={styles.footer}>
             <Text style={styles.footerText}>
               Have an account?{" "}
@@ -202,39 +182,6 @@ const UserRegistration = ({ navigation }: { navigation: any }) => {
           </View>
         </View>
       </ScrollView>
-
-      <Modal visible={showOtpPopup} transparent animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity
-              onPress={() => {
-                setShowOtpPopup(false);
-                dispatch(sentOtp(false));
-              }}
-              style={styles.closeButton}
-            >
-              <X size={24} color="#666" />
-            </TouchableOpacity>
-            <Text style={styles.modalTitle}>Enter OTP</Text>
-            <Text style={styles.modalDescription}>
-              An OTP has been sent to your email. Enter it below to complete
-              registration.
-            </Text>
-            <View style={styles.inputGroup}>
-              <CheckCircle size={18} color="#66BB6A" style={styles.icon} />
-              <TextInput
-                style={styles.input}
-                placeholder="Enter OTP"
-                keyboardType="number-pad"
-                onChangeText={(text) => dispatch(setOtp(text))}
-              />
-            </View>
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Verify & Register</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </KeyboardAvoidingView>
   );
 };
@@ -299,34 +246,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 8,
   },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    width: "90%",
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 16,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#2E7D32",
-    marginBottom: 8,
-  },
   modalDescription: {
     color: "#388E3C",
     textAlign: "center",
     marginBottom: 16,
-  },
-  closeButton: {
-    position: "absolute",
-    top: 8,
-    right: 8,
   },
   footer: {
     marginTop: 16,
