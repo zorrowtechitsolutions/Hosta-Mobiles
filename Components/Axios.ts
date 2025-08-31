@@ -2,7 +2,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const apiClient = axios.create({
-  baseURL: "https://hospital-mangement-backend.vercel.app",
+  baseURL: "https://hosta-server.vercel.app",
   withCredentials: true,
 });
 
