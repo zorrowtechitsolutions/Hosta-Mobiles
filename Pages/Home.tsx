@@ -7,7 +7,15 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import { Ambulance, Building2, Droplet, Hospital, Search, Stethoscope, UserRound } from "lucide-react-native";
+import {
+  Ambulance,
+  Building2,
+  Droplet,
+  Hospital,
+  Search,
+  Stethoscope,
+  UserRound,
+} from "lucide-react-native";
 import Navbar from "../Components/Navbar";
 import AdSwiper from "../Components/Carousels";
 import { useDispatch } from "react-redux";
@@ -20,9 +28,8 @@ const features = [
   { name: "Ambulance", icon: Ambulance, screen: "Ambulance" },
   // { name: "Donate Blood", icon: Droplet, screen: "Blood-Donation" },
   { name: "Blood", icon: Droplet, screen: "Blood" },
-    { name: "Nurses", icon:  UserRound , screen: "Blood" },
+  // { name: "Nurses", icon:  UserRound , screen: "Blood" },
 ];
-
 
 const adImages = [
   "https://img.freepik.com/free-vector/flat-design-medical-facebook-ad_23-2149091913.jpg",
@@ -46,10 +53,13 @@ const HomePage = ({ navigation }: { navigation: any }) => {
       {/* Services Section */}
       <Text style={styles.servicesHeading}>Our Services</Text>
       <View style={styles.servicesGrid}>
-        {features.map((feature) => (
+        {features.map((feature, index) => (
           <TouchableOpacity
             key={feature.name}
-            style={styles.serviceCard}
+            style={[
+              styles.serviceCard,
+              index === features.length - 1 && styles.fullWidthCard, 
+            ]}
             onPress={() => navigation.navigate(feature.screen)}
           >
             <feature.icon size={32} color="#28a745" style={styles.icon} />
@@ -102,6 +112,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#065F46",
     textAlign: "center",
+  },
+  fullWidthCard: {
+    width: "100%", 
   },
 });
 

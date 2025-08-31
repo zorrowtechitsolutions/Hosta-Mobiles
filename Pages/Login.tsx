@@ -58,33 +58,33 @@ const UserLogin = ({ navigation }: { navigation: any }) => {
   };
 
   // ✅ Google Login (just hit backend `/` endpoint)
-  const handleGoogleLogin = async () => {
-    try {
-      //  const result = await apiClient.post(
-      //   "/",
-      //   { email, password },
-      //   { withCredentials: true }
-      // );
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     //  const result = await apiClient.post(
+  //     //   "/",
+  //     //   { email, password },
+  //     //   { withCredentials: true }
+  //     // );
 
-      // successToast("Login successful");
-      // await AsyncStorage.setItem("accessToken", result.data.token);
-      // dispatch(
-      //   updateUserData({
-      //     ...result.data.data,
-      //     _id: result.data.data._id as string,
-      //   })
-      // );
-      // navigation.navigate("Home" as never);
+  //     // successToast("Login successful");
+  //     // await AsyncStorage.setItem("accessToken", result.data.token);
+  //     // dispatch(
+  //     //   updateUserData({
+  //     //     ...result.data.data,
+  //     //     _id: result.data.data._id as string,
+  //     //   })
+  //     // );
+  //     // navigation.navigate("Home" as never);
 
-       const backendUrl = "http://localhost:3000"; 
+  //      const backendUrl = "http://localhost:3000"; 
 
-    // Open backend root endpoint (which has <a href="/auth/google">...)
-    await Linking.openURL(backendUrl);
-    } catch (error) {
-      setError("Failed to start Google login. Please try again.");
-      console.error(error);
-    }
-  };
+  //   // Open backend root endpoint (which has <a href="/auth/google">...)
+  //   await Linking.openURL(backendUrl);
+  //   } catch (error) {
+  //     setError("Failed to start Google login. Please try again.");
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <KeyboardAvoidingView
@@ -147,10 +147,10 @@ const UserLogin = ({ navigation }: { navigation: any }) => {
             <Text style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
 
-          {/* ✅ Google Signin Button (redirects to backend /) */}
+          {/* ✅ Google Signin Button (redirects to backend /)
           <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
             <Text style={styles.googleButtonText}>Sign in with Google</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>
