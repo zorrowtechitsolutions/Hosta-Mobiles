@@ -32,6 +32,8 @@ export default function Profile() {
   };
   getUser();
 
+  
+
   const handleEditToggle = () => {
     if (isEditing) {
       setUser(editableData);
