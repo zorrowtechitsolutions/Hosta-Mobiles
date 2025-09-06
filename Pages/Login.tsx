@@ -42,11 +42,10 @@ const UserLogin = ({ navigation }: { navigation: any }) => {
     }
 
     try {
-      await apiClient.post(
-        "/api/users/login/phone",
-        { phone },
-        { withCredentials: true }
-      );
+      await apiClient
+        .post("/api/users/login/phone", { phone }, { withCredentials: true })
+        .then((result) => console.log(result))
+        .catch((err) => console.log(err, "error"));
       successToast("OTP sent successfully!");
       setOtp("");
       setShowOtpModal(true);
