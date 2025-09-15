@@ -48,7 +48,6 @@ export default function ContactPage() {
         setRating(0);
       })
       .catch((err) => {
-        console.log(err);
         setSubmitStatus("error");
       });
 

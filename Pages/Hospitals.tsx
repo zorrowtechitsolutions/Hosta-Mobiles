@@ -56,7 +56,6 @@ export default function HospitalsPage({
 
   const isOpenNow = (workingHours: WorkingHours[]) => {
     const now = new Date();
-    console.log("Current date and time:", now.toISOString());
 
     const currentDay = now
       .toLocaleString("en-US", {
@@ -76,28 +75,23 @@ export default function HospitalsPage({
     const match = Time.match(/\b\d{2}:\d{2}\b/);
     const currentTime = match ? match[0] : null;
 
-    console.log("Current day:", currentDay);
-    console.log("Current time:", currentTime);
+  
 
     const todayHours = workingHours.find(
       (wh) => wh.day.toLowerCase().slice(0, 3) == currentDay.toLowerCase()
     );
 
-    console.log("Today's hours:", todayHours);
     if (
       !todayHours ||
       todayHours.is_holiday ||
       !todayHours.opening_time ||
       !todayHours.closing_time
     ) {
-      console.log("Returning false due to missing or holiday hours");
       return false;
     }
 
     const { opening_time, closing_time } = todayHours;
 
-    console.log("Opening time:", opening_time);
-    console.log("Closing time:", closing_time);
 
     const currentTimeMinutes = parseTimeToMinutes(currentTime as string);
     const openingTimeMinutes = parseTimeToMinutes(opening_time);
@@ -106,7 +100,6 @@ export default function HospitalsPage({
     const isOpen =
       currentTimeMinutes >= openingTimeMinutes &&
       currentTimeMinutes <= closingTimeMinutes;
-    console.log("Is open:", isOpen);
 
     return isOpen;
   };
