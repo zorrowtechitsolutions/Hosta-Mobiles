@@ -11,12 +11,10 @@ const App = () => {
   useEffect(() => {
     const prepareApp = async () => {
       try {
-        console.log("The app is loading......")
         await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (e) {
         console.warn(e);
       } finally {
-        console.log("Hiding splash screen");
         await SplashScreen.hideAsync();
       }
     };

@@ -45,7 +45,7 @@ const PasswordReset= ({navigation}:{navigation:any}) => {
       setStep(2);
       setSuccess("OTP sent to your email address.");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -55,7 +55,6 @@ const PasswordReset= ({navigation}:{navigation:any}) => {
       setError("Please enter the OTP.");
       return;
     }
-    console.log(formData.otp,randomNumber);
     
     // Simulate OTP verification
     if (formData.otp === randomNumber) {
@@ -88,7 +87,7 @@ const PasswordReset= ({navigation}:{navigation:any}) => {
       setStep(4);
       setSuccess("Password reset successfully.");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

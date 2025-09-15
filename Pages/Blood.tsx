@@ -51,13 +51,16 @@ const calculateAge = (dob: string) => {
   if (m < 0 || (m === 0 && t.getDate() < b.getDate())) age--;
   return age;
 };
-const getInitial = (name: string) => (name?.trim()?.charAt(0) || "?").toUpperCase();
+export const getInitial = (name: string) => (name?.trim()?.charAt(0) || "?").toUpperCase();
 
 const BloodDonorsPage = ({ navigation }: { navigation: any }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGroup, setSelectedGroup] = useState<IBloodDonor["bloodGroup"] | "All">("All");
   const [loading, setLoading] = useReactState(true);
   const [refreshing, setRefreshing] = useReactState(false);
+    const {  _id } = useSelector(
+      (state: RootState) => state.userLogin
+    );
 
   const dispatch = useDispatch();
   const donors = useSelector((state: RootState) => state.bloodData) as IBloodDonor[];
@@ -66,6 +69,9 @@ const BloodDonorsPage = ({ navigation }: { navigation: any }) => {
     ...d,
     id: d.id || String(index),
   }));
+
+
+  const handleDonate = () => _id? navigation.navigate("Donate"): navigation.navigate("Login");
 
   const fetchDonors = async () => {
     try {
@@ -183,7 +189,7 @@ const BloodDonorsPage = ({ navigation }: { navigation: any }) => {
           onChangeText={setSearchTerm}
           returnKeyType="search"
         />
-        <TouchableOpacity style={styles.donateBtn} onPress={() => navigation.navigate("Donate")}>
+        <TouchableOpacity style={styles.donateBtn} onPress={handleDonate}>
           <Text style={styles.donateBtnText}>Donate</Text>
         </TouchableOpacity>
       </View>

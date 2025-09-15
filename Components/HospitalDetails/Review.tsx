@@ -86,7 +86,6 @@ export const ReviewComponent = ({
       setEditingReview(null);
       setNewReview({ rating: 0, comment: "" });
     } catch (err) {
-      console.log("Err", err);
       Alert.alert("Error", "Unable to update review.");
     }
   };

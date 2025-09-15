@@ -7,6 +7,7 @@ import { RootState } from "../Redux/Store";
 import { apiClient } from "./Axios";
 import { Menu, X } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getInitial } from "../Pages/Blood";
 
 
 type NavItemProps = {
@@ -59,7 +60,11 @@ const MobileMenu = ({ isOpen, onClose, children }: MobileMenuProps) => {
 
 // Main Navbar Component
 export default function Navbar() {
-  const { _id } = useSelector((state: RootState) => state.userLogin);
+
+
+  
+
+  const { _id, name } = useSelector((state: RootState) => state.userLogin);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -67,12 +72,6 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 
-    const [user, setUser] = useState({
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "9876543210",
-      picture: "https://i.pravatar.cc/300",
-    });
 
   const navItems = [
     { name: "Home", path: "Home" },
@@ -130,7 +129,15 @@ export default function Navbar() {
         onClose={() => setIsMobileMenuOpen(false)}
       >
   <TouchableOpacity onPress={() => navigation.navigate("Settings" as never)}>
-    <Image source={{ uri: user?.picture }} style={styles.avatar} />
+  { _id &&
+
+       <View style={styles.avatarPlaceholder}          >
+                        <Text allowFontScaling={false} style={styles.avatarInitial}>
+                          {getInitial(name as string)}
+                        </Text>
+                      </View>
+  }
+                      
   </TouchableOpacity>        
         {navItems.map((item) => (
           <NavItem
@@ -165,19 +172,17 @@ export default function Navbar() {
 const styles = StyleSheet.create({
   navbar: {
     backgroundColor: "#28a745",
-    padding: 16,
+    padding: 25,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    
   },
-    avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 3,
-    borderColor: "#007bff",
-    margin: "auto",
+    avatarPlaceholder: {
+    width: 100, height: 100, borderRadius: 30, backgroundColor: "#A5D6A7",
+    justifyContent: "center", alignItems: "center",    margin: "auto",
   },
+  avatarInitial: { color: "#fff", fontWeight: "bold", fontSize: 22 },
   title: {
     color: "white",
     fontSize: 20,
