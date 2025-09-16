@@ -26,6 +26,7 @@ export default function Profile() {
   const dispatch = useDispatch();
 
 
+
   const [user, setUser] = useState<any>(null);
 
   const handleSave = async () => {
@@ -76,7 +77,6 @@ useEffect(() => {
       const result = await apiClient.get(`/api/donors/users/${user._id}`);
       setDonor(result.data);
     } catch (err) {
-      // console.error("Failed to fetch donor", err);
     }
   };
   fetchDonor();
