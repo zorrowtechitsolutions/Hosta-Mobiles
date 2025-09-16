@@ -13,10 +13,10 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.thasleemmk.hostahospitalmanagement"
+  "bundleIdentifier": "com.zorrowtech.hostamanager"
     },
     "android": {
-      "versionCode": 24,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/HOSTAICON.png",
         "backgroundColor": "#ffffff"
@@ -24,7 +24,7 @@
       "permissions": [
         "INTERNET"
       ],
-      "package": "com.thasleemmk.hostahospitalmanagement"
+      "package": "com.zorrowtech.hostamanager"
     },
     "web": {
       "favicon": "./assets/splash-icon.png"
@@ -35,6 +35,9 @@
         "projectId": "cb56f7a9-cc4f-485e-a099-56d7cb2f6dc8"
       }
     },
-    "owner": "zorrowtech"
+    "owner": "zorrowtech",
+    "plugins": [
+      "expo-build-properties"
+    ]
   }
 }

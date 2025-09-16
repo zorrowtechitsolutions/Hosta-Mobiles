@@ -8,6 +8,7 @@ export interface UserData {
   phone?: string;
   latitude?: number;
   longitude?: number;
+  picture?: string;
 }
 
 const InitialState: UserData = {
@@ -16,6 +17,7 @@ const InitialState: UserData = {
   email: "",
   password: "",
   phone: "",
+  picture: "",
 };
 
 const userLoginSlice = createSlice({
@@ -23,7 +25,7 @@ const userLoginSlice = createSlice({
   initialState: InitialState,
   reducers: {
     updateUserData: (state, action: PayloadAction<UserData>) => {
-      const { _id, name, email, password, phone, latitude, longitude } =
+      const { _id, name, email, password, phone, latitude, longitude , picture} =
         action.payload;
       state._id = _id ?? state._id;
       state.name = name ?? state.name;
@@ -32,6 +34,7 @@ const userLoginSlice = createSlice({
       state.phone = phone ?? state.phone;
       state.latitude = latitude ?? state.latitude;
       state.longitude = longitude ?? state.longitude;
+      state.picture = picture ?? state.picture;
     },
 
     logoutUser: (state) => {
@@ -42,6 +45,7 @@ const userLoginSlice = createSlice({
       state.phone = "";
       state.latitude = undefined;
       state.longitude = undefined;
+      state.picture = "";
     },
   },
 });

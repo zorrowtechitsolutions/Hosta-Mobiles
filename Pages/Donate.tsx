@@ -42,13 +42,15 @@ const BLOOD_GROUPS: Exclude<BloodGroup, "">[] = [
 
 const CreateDonor = ({ navigation }: { navigation: any }) => {
   const dispatch = useDispatch();
-  // const { user  } : any = useSelector((state: RootState) => state.userLogin);
 
- const  user = "1234567789"
 
+  const { phone, _id } = useSelector(
+     (state: RootState) => state.userLogin
+   );
+   
 
   const [formData, setFormData] = useState<FormData>({
-    phone: "",
+    phone:phone as string,
     dateOfBirth: "",
     bloodGroup: "",
     place: "",
@@ -87,8 +89,8 @@ const handleSubmit = async () => {
       dateOfBirth: formData.dateOfBirth,
       bloodGroup: formData.bloodGroup,
       address: { place: formData.place, pincode: Number(formData.pincode) },
-      lastDonationDate: formData.lastDonationDate || null,
-      userId: "68474807ce21094447249a4a", // ideally from Redux auth
+      // lastDonationDate: formData.lastDonationDate || null,
+      userId: _id, // ideally from Redux auth
     };
 
     const res = await apiClient.post("/api/donors", { newDonor: payload }, { withCredentials: true });
@@ -119,10 +121,10 @@ const handleSubmit = async () => {
             <Phone size={18} color="#66BB6A" style={styles.icon} />
             <TextInput
               style={styles.input}
-              placeholder="Phone Number"
               keyboardType="number-pad"
               value={formData.phone}
               onChangeText={(text) => handleChange("phone", text)}
+              readOnly
             />
           </View>
           {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
@@ -181,7 +183,7 @@ const handleSubmit = async () => {
           {errors.pincode && <Text style={styles.errorText}>{errors.pincode}</Text>}
 
           {/* Last Donation Date */}
-          <View style={styles.inputGroup}>
+          {/* <View style={styles.inputGroup}>
             <Calendar size={18} color="#66BB6A" style={styles.icon} />
             <TextInput
               style={styles.input}
@@ -189,7 +191,7 @@ const handleSubmit = async () => {
               value={formData.lastDonationDate}
               onChangeText={(text) => handleChange("lastDonationDate", text)}
             />
-          </View>
+          </View> */}
 
           {/* Buttons */}
           <View style={styles.buttonRow}>
