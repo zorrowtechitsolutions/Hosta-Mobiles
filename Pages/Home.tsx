@@ -34,7 +34,7 @@ const features = [
 const adImages = [
   "https://img.freepik.com/free-vector/flat-design-medical-facebook-ad_23-2149091913.jpg",
   "https://img.freepik.com/free-vector/flat-design-medical-facebook-ad_23-2149091912.jpg",
-  "https://th.bing.com/th/id/OIP.yTcG-jZWUKXEzm18Jcr2yAHaEK?w=800&h=450&rs=1&pid=ImgDetMain",
+  "https://mangalprabhu.com/wp-content/uploads/2024/03/Pregnancy-Offer.jpg",
 ];
 
 const HomePage = ({ navigation }: { navigation: any }) => {
