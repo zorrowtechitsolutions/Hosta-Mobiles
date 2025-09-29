@@ -32,6 +32,7 @@ export default function Profile({ navigation }: { navigation: any }) {
   const [editableData, setEditableData] = useState<any>({});
   const [donor, setDonor] = useState<any>(null);
   const dispatch = useDispatch();
+
   const [user, setUser] = useState<any>(null);
   const [deleteDonor, setDeleteDonor] = useState<any>(false);
 
@@ -74,6 +75,16 @@ export default function Profile({ navigation }: { navigation: any }) {
 
   useEffect(() => {
     if (!user?._id) return;
+
+  const fetchDonor = async () => {
+    try {
+      const result = await apiClient.get(`/api/donors/users/${user._id}`);
+      setDonor(result.data);
+    } catch (err) {
+    }
+  };
+  fetchDonor();
+}, [user?._id]); // only when id changes
 
     const fetchDonor = async () => {
       try {
