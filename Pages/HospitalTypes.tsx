@@ -5,6 +5,7 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  ScrollView
 } from "react-native";
 import { Header } from "../Components/Common";
 import Navbar from "../Components/Navbar";
@@ -45,54 +46,85 @@ const HospitalTypeCards = ({ navigation }: { navigation: any }) => {
     {
       title: "Allopathy",
       image:
-        "https://th.bing.com/th/id/OIP.47Ra6GUykfLRORz713KmpwHaE6?w=232&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075523/Allopathy_ybcnoz.jpg",
     },
     {
       title: "Homeopathy",
       image:
-        "https://th.bing.com/th/id/OIP.mHSxohdwswyJLGlqtk3wfwHaE7?rs=1&pid=ImgDetMain",
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075524/Homeopathy_iqjctu.jpg",
     },
     {
       title: "Ayurveda",
       image:
-        "https://th.bing.com/th/id/OIP.naR0FBavTXRS08FGcT4mGAHaEn?rs=1&pid=ImgDetMain",
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075523/Ayurveda_wu9ia9.jpg",
     },
     {
       title: "Unani",
       image:
-        "https://th.bing.com/th/id/R.6f6ce2d6663331e471b4f4a13ad67640?rik=wMqEC%2bmw38ScAg&riu=http%3a%2f%2funanihakeem.in%2fimages%2fbg%2fbg4.jpg&ehk=w3pjl0aV%2fqER9efY0FgzhhzzP7J6cVx%2fJIBm8PXRJts%3d&risl=&pid=ImgRaw&r=0",
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075524/Unani_exl5fx.jpg",
     },
     {
       title: "Acupuncture",
       image:
-        "https://th.bing.com/th/id/OIP.eVNH_oc408tN7zftvmyqXwHaE7?w=281&h=187&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075523/Acupunture_ajxuvc.jpg",
+    },
+    {
+      title: "De-addiction",
+      image:
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075523/Deaddiction_iiaqml.jpg",
+    },
+    {
+      title: "Mental Health",
+      image:
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075524/mental_health_cjcvop.jpg",
+    },
+    {
+      title: "Laboratory",
+      image:
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075524/Lab_kuj0ha.jpg",
+    },
+    {
+      title: "Eye Care",
+      image:
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075524/Eye_wyynmz.jpg",
+    },
+    {
+      title: "Physiotherapy",
+      image:
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075524/Physiotherapy_i6ezv8.jpg",
     },
     {
       title: "Other",
       image:
-        "https://th.bing.com/th/id/OIP.4hOrUMJve5Es4c3Uvq7evAHaHr?w=2131&h=2209&rs=1&pid=ImgDetMain",
+        "https://res.cloudinary.com/dupevol0e/image/upload/v1759075524/Others_wf9afk.jpg",
     },
   ];
 
   return (
     <View style={styles.container}>
       <Navbar />
-      <View style={{ paddingHorizontal: 16 }}>
+      <View style={styles.contentContainer}>
         <Header
           onBackClick={() => navigation.navigate("Home")}
           title="Hospital Types"
         />
-        <View style={styles.cardsContainer}>
-          {hospitalTypes.map((type, index) => (
-            <View key={index} style={styles.cardLink}>
-              <HospitalTypeCard
-                title={type.title}
-                image={type.image}
-                navigation={navigation}
-              />
-            </View>
-          ))}
-        </View>
+        <ScrollView 
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.cardsContainer}>
+            {hospitalTypes.map((type, index) => (
+              <View key={index} style={styles.cardLink}>
+                <HospitalTypeCard
+                  title={type.title}
+                  image={type.image}
+                  navigation={navigation}
+                />
+              </View>
+            ))}
+          </View>
+        </ScrollView>
       </View>
     </View>
   );
@@ -102,6 +134,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ECFDF5",
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20, // Add some bottom padding
   },
   cardsContainer: {
     marginTop: 20,
