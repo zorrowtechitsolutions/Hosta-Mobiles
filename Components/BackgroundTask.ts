@@ -13,13 +13,12 @@ export const getData = async (dispatch: any) => {
     );
 
     const result = await apiClient.get("/api/hospitals");
+    
     dispatch(setHospitalData({ data: result.data.data }));
 
-    const ambulances = await apiClient.get("/api/ambulances");
-    dispatch(setAmbulances(ambulances.data.data));
 
-    const donorsRes = await apiClient.get("/api/donors");
-    dispatch(setBloods(donorsRes.data.donors));
+    const donorsRes = await apiClient.get("/api/donors");    
+    dispatch(setBloods(donorsRes?.data?.donors));
 
     const user = await apiClient.get("/api/users", {
       withCredentials: true,
@@ -35,9 +34,15 @@ export const getData = async (dispatch: any) => {
       })
     );
 
+
+    const ambulances = await apiClient.get("/api/ambulances");
+    dispatch(setAmbulances(ambulances?.data?.data));
+
     
 
-  } catch (err) {
+  } catch (err: any) {
+    if(err?.status == 404) return
     console.error(err);
+    
   }
 };

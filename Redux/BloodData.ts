@@ -41,6 +41,7 @@ const bloodSlice = createSlice({
       const merged = dedupeById([...incoming, ...state]);
       return merged;
     },
+    
     // Optimistic add/update a single donor
     addBlood: (state, action: PayloadAction<any>) => {
       const donor = normalize(action.payload);
@@ -48,9 +49,13 @@ const bloodSlice = createSlice({
       if (idx === -1) state.unshift(donor);
       else state[idx] = donor;
     },
+   removeBlood: (state, action: PayloadAction<string>) => {
+  return state.filter((donor: any) => donor._id !== action.payload);
+},
+
     clearBloods: () => initialState,
   },
 });
 
-export const { setBloods, addBlood, clearBloods } = bloodSlice.actions;
+export const { setBloods, addBlood, clearBloods, removeBlood } = bloodSlice.actions;
 export default bloodSlice.reducer;

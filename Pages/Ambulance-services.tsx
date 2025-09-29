@@ -14,7 +14,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../Redux/Store";
 import { Header } from "../Components/Common";
 import Navbar from "../Components/Navbar";
-import { Phone } from "lucide-react-native";
+import {  Phone } from "lucide-react-native";
+import { Feather } from "@expo/vector-icons";
 import LoadingSpinner from "../Components/LoadingSpinner";
 
 const AmbulanceServicesPage = ({ navigation }: { navigation: any }) => {
@@ -31,25 +32,34 @@ const AmbulanceServicesPage = ({ navigation }: { navigation: any }) => {
     latitude: number;
     longitude: number;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     try {
       setUserLocation({ latitude, longitude });
+      // Simulate loading time for better UX
+      setTimeout(() => setIsLoading(false), 1000);
     } catch (error) {
       console.error("Error getting user location:", error);
+      setIsLoading(false);
     }
-  }, []);
+  }, [latitude, longitude]);
 
   useEffect(() => {
     // Filter and sort services based on search term and location
-    const filtered = AmbulanceServices.filter(
-      (service) =>
-        service.serviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        service.address.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    let filtered = AmbulanceServices;
+    
+    if (searchTerm) {
+      filtered = AmbulanceServices.filter(
+        (service) =>
+          service.serviceName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          service.address?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
     const sortedAndFiltered = sortServices(filtered);
     setFilteredServices(sortedAndFiltered);
-  }, [searchTerm, sortOrder, userLocation]);
+  }, [searchTerm, sortOrder, userLocation, AmbulanceServices]);
 
   const calculateDistance = (
     lat1: number,
@@ -70,24 +80,21 @@ const AmbulanceServicesPage = ({ navigation }: { navigation: any }) => {
     return R * c;
   };
 
-  if (AmbulanceServices.length === 0) {
-    return <LoadingSpinner />;
-  }
-
   const sortServices = (services: typeof AmbulanceServices) => {
-    return services.sort((a, b) => {
-      if (!userLocation) return 0;
+    if (!userLocation) return services;
+    
+    return [...services].sort((a, b) => {
       const distanceA = calculateDistance(
         userLocation.latitude,
         userLocation.longitude,
-        Number(a.latitude),
-        Number(a.longitude)
+        Number(a.latitude) || 0,
+        Number(a.longitude) || 0
       );
       const distanceB = calculateDistance(
         userLocation.latitude,
         userLocation.longitude,
-        Number(b.latitude),
-        Number(b.longitude)
+        Number(b.latitude) || 0,
+        Number(b.longitude) || 0
       );
       return sortOrder === "asc"
         ? distanceA - distanceB
@@ -100,6 +107,11 @@ const AmbulanceServicesPage = ({ navigation }: { navigation: any }) => {
   };
 
   const handleCall = (phone: string) => {
+    if (!phone) {
+      Alert.alert("Error", "Phone number not available");
+      return;
+    }
+    
     Linking.openURL(`tel:${phone}`).catch(() =>
       Alert.alert("Error", "Unable to make a call")
     );
@@ -110,8 +122,8 @@ const AmbulanceServicesPage = ({ navigation }: { navigation: any }) => {
       ? calculateDistance(
           userLocation.latitude,
           userLocation.longitude,
-          Number(item.latitude),
-          Number(item.longitude)
+          Number(item.latitude) || 0,
+          Number(item.longitude) || 0
         )
       : null;
 
@@ -122,23 +134,31 @@ const AmbulanceServicesPage = ({ navigation }: { navigation: any }) => {
             <Icon name="ambulance" size={24} color="#388E3C" />
           </View>
           <View style={styles.details}>
-            <Text style={styles.serviceName}>{item.serviceName}</Text>
+            <Text style={styles.serviceName}>
+              {item.serviceName || "Unknown Service"}
+            </Text>
             <Text style={styles.address}>
               <Icon name="map-marker-alt" size={14} color="#616161" />{" "}
-              {item.address}
+              {item.address || "Address not available"}
             </Text>
             <View style={styles.actions}>
               <TouchableOpacity
-                style={styles.callButton}
+                style={[
+                  styles.callButton,
+                  !item.phone && styles.callButtonDisabled
+                ]}
                 onPress={() => handleCall(item.phone)}
+                disabled={!item.phone}
               >
                 <Phone size={16} color="#FFF" />
-                <Text style={styles.callButtonText}>Call Now</Text>
+                <Text style={styles.callButtonText}>
+                  {item.phone ? "Call Now" : "No Phone"}
+                </Text>
               </TouchableOpacity>
               <Text style={styles.distance}>
                 {distance !== null
                   ? `${distance.toFixed(2)} km away`
-                  : "Calculating..."}
+                  : "Distance unknown"}
               </Text>
             </View>
           </View>
@@ -146,6 +166,11 @@ const AmbulanceServicesPage = ({ navigation }: { navigation: any }) => {
       </View>
     );
   };
+
+  // Show loading spinner while initializing
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <View style={styles.container}>
@@ -155,14 +180,15 @@ const AmbulanceServicesPage = ({ navigation }: { navigation: any }) => {
         title="Ambulance Services"
       />
 
-      <View style={{ paddingHorizontal: 16 }}>
+      <View style={styles.content}>
         <View style={styles.searchContainer}>
-          <Icon
-            name="search"
-            size={18}
-            color="#388E3C"
-            style={styles.searchIcon}
-          />
+      
+             <Feather
+              name="search"
+              size={20}
+              color="#4CAF50"
+              style={styles.searchIcon}
+            />
           <TextInput
             style={styles.searchInput}
             placeholder="Search ambulance services..."
@@ -171,20 +197,41 @@ const AmbulanceServicesPage = ({ navigation }: { navigation: any }) => {
           />
         </View>
 
-        <TouchableOpacity onPress={toggleSortOrder} style={styles.sortButton}>
-          <Text style={styles.sortText}>
-            Sort by Distance <Icon name="sort" size={16} />
-          </Text>
-        </TouchableOpacity>
+        {AmbulanceServices.length > 0 && (
+          <TouchableOpacity onPress={toggleSortOrder} style={styles.sortButton}>
+            <Text style={styles.sortText}>
+              Sort by Distance ({sortOrder === "asc" ? "Nearest" : "Farthest"}){" "}
+              <Icon name="sort" size={16} />
+            </Text>
+          </TouchableOpacity>
+        )}
 
-        <FlatList
-          data={filteredServices}
-          // keyExtractor={(item) => item.id}
-          renderItem={renderService}
-          ListEmptyComponent={
-            <Text style={styles.emptyMessage}>No services found.</Text>
-          }
-        />
+        {filteredServices.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Icon name="ambulance" size={64} color="#9E9E9E" />
+            <Text style={styles.emptyTitle}>No ambulance services found</Text>
+            <Text style={styles.emptyMessage}>
+              {searchTerm
+                ? `No services found for "${searchTerm}". Try a different search term.`
+                : "No ambulance services are currently available."}
+            </Text>
+            {searchTerm && (
+              <TouchableOpacity
+                style={styles.clearButton}
+                onPress={() => setSearchTerm("")}
+              >
+                <Text style={styles.clearButtonText}>Clear Search</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        ) : (
+          <FlatList
+            data={filteredServices}
+            keyExtractor={(item : any, index : any) => item.id || `ambulance-${index}`}
+            renderItem={renderService}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </View>
     </View>
   );
@@ -197,6 +244,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ECFDF5",
   },
+  content: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -204,6 +255,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 16,
     marginBottom: 16,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   searchIcon: {
     marginRight: 8,
@@ -211,21 +267,28 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: 40,
+    fontSize: 16,
   },
   sortButton: {
     alignSelf: "flex-end",
     marginBottom: 16,
+    padding: 8,
   },
   sortText: {
     fontSize: 14,
     color: "#388E3C",
+    fontWeight: "600",
   },
   card: {
     backgroundColor: "#FFF",
-    borderRadius: 10,
-    marginBottom: 16,
+    borderRadius: 12,
+    marginBottom: 12,
     padding: 16,
-    elevation: 2,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   cardContent: {
     flexDirection: "row",
@@ -235,8 +298,10 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 10,
     marginRight: 16,
-    display: "flex",
     justifyContent: "center",
+    alignItems: "center",
+    width: 48,
+    height: 48,
   },
   details: {
     flex: 1,
@@ -245,35 +310,70 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#388E3C",
+    marginBottom: 4,
   },
   address: {
     color: "#616161",
-    marginVertical: 4,
+    fontSize: 14,
+    marginBottom: 8,
   },
   actions: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 8,
   },
   callButton: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#388E3C",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     borderRadius: 25,
+  },
+  callButtonDisabled: {
+    backgroundColor: "#9E9E9E",
   },
   callButtonText: {
     color: "#FFF",
     marginLeft: 6,
+    fontWeight: "600",
+    fontSize: 14,
   },
   distance: {
     color: "#616161",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 40,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#616161",
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: "center",
   },
   emptyMessage: {
+    fontSize: 16,
+    color: "#9E9E9E",
     textAlign: "center",
-    color: "#616161",
-    marginTop: 20,
+    lineHeight: 22,
+  },
+  clearButton: {
+    marginTop: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#388E3C",
+    borderRadius: 25,
+  },
+  clearButtonText: {
+    color: "#FFF",
+    fontWeight: "600",
+    fontSize: 16,
   },
 });
